@@ -125,7 +125,9 @@ pub const PLAYER_COLOR: [f32; 4] = [0.25, 0.55, 1.0, 1.0];
 pub const ENEMY_COLOR: [f32; 4] = [1.0, 0.3, 0.25, 1.0];
 pub const BULLET_COLOR: [f32; 4] = [1.0, 0.95, 0.4, 1.0];
 pub const DEBRIS_COLOR: [f32; 4] = [1.0, 0.6, 0.2, 1.0];
-pub const FLOOR_COLOR: [f32; 4] = [0.12, 0.13, 0.16, 1.0];
+pub const FLOOR_COLOR: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
+pub const FLOOR_TILES: f32 = 6.0;
+pub const FLOOR_TEXTURE: &str = "proto_dark_06";
 pub const RANDOM_SEED: u64 = 0x9E37_79B9_7F4A_7C15;
 
 pub fn next_random(state: &mut u64) -> f32 {
