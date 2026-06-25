@@ -11,7 +11,7 @@ mod spin;
 
 pub use collision::collision;
 pub use death::death;
-pub use hud::hud;
+pub use hud::{build_hud, hud};
 pub use input::player_input;
 pub use lifetime::lifetime;
 pub use motion::integrate_motion;

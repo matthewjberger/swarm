@@ -21,11 +21,18 @@ freecs::ecs! {
     }
     GameResources {
         player_entity: Option<Entity>,
-        score_text: Option<Entity>,
+        hud: Hud,
         score: u32,
         elapsed: f32,
         spawn_timer: f32,
     }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct Hud {
+    pub score_value: Option<Entity>,
+    pub health_fill: Option<Entity>,
+    pub health_text: Option<Entity>,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
