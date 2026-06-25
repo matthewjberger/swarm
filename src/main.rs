@@ -13,11 +13,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         player_input,
         seek,
         integrate_motion,
-        confine,
-        spin,
         collision,
         lifetime,
         death,
+        spin,
+        render_sync,
         hud,
     )
 }

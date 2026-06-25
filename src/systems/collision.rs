@@ -20,34 +20,28 @@ struct Body {
 
 pub fn collision(world: &mut World, game_world: &mut GameWorld) {
     let mut bodies: Vec<Body> = Vec::new();
-    for entity in game_world.query_entities(COLLIDER | FACTION | ENGINE_ENTITY) {
-        let (Some(collider), Some(faction), Some(position)) = (
-            game_world.get_collider(entity).copied(),
-            game_world.get_faction(entity).copied(),
-            engine_position(world, game_world, entity),
-        ) else {
-            continue;
-        };
-        let kind = if game_world.get_player(entity).is_some() {
+    game_world.for_each(COLLIDER | FACTION | POSITION, 0, |entity, table, index| {
+        let kind = if table.mask & PLAYER != 0 {
             Kind::Player
-        } else if game_world.get_damage(entity).is_some() {
+        } else if table.mask & DAMAGE != 0 {
             Kind::Projectile
         } else {
             Kind::Enemy
         };
-        let damage = game_world
-            .get_damage(entity)
-            .map(|damage| damage.amount)
-            .unwrap_or(0.0);
+        let damage = if table.mask & DAMAGE != 0 {
+            table.damage[index].amount
+        } else {
+            0.0
+        };
         bodies.push(Body {
             entity,
-            position,
-            radius: collider.radius,
-            team: faction.0,
+            position: table.position[index].0,
+            radius: table.collider[index].radius,
+            team: table.faction[index].0,
             kind,
             damage,
         });
-    }
+    });
 
     let mut hits: Vec<(Entity, f32)> = Vec::new();
     let mut destroyed: HashSet<Entity> = HashSet::new();

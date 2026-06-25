@@ -7,6 +7,7 @@ pub use freecs::Entity;
 freecs::ecs! {
     GameWorld {
         engine_entity: EngineEntity => ENGINE_ENTITY,
+        position: Position => POSITION,
         velocity: Velocity => VELOCITY,
         health: Health => HEALTH,
         collider: Collider => COLLIDER,
@@ -34,6 +35,9 @@ pub enum Team {
     Player,
     Enemy,
 }
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct Position(pub Vec3);
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Velocity(pub Vec3);
@@ -137,7 +141,7 @@ pub fn next_random(state: &mut u64) -> f32 {
     (*state >> 11) as f32 / (1u64 << 53) as f32
 }
 
-pub fn engine_position(world: &World, game_world: &GameWorld, game_entity: Entity) -> Option<Vec3> {
-    let engine = game_world.get_engine_entity(game_entity)?.0;
-    Some(position(world, engine))
+pub fn player_position(game_world: &GameWorld) -> Option<Vec3> {
+    let player = game_world.resources.player_entity?;
+    Some(game_world.get_position(player)?.0)
 }

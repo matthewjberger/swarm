@@ -1,21 +1,21 @@
 mod collision;
-mod confine;
 mod death;
 mod hud;
 mod input;
 mod lifetime;
 mod motion;
+mod render_sync;
 mod seek;
 mod spawning;
 mod spin;
 
 pub use collision::collision;
-pub use confine::confine;
 pub use death::death;
 pub use hud::hud;
 pub use input::player_input;
 pub use lifetime::lifetime;
 pub use motion::integrate_motion;
+pub use render_sync::render_sync;
 pub use seek::seek;
 pub use spawning::enemy_spawning;
 pub use spin::spin;
