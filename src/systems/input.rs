@@ -1,0 +1,58 @@
+use crate::ecs::*;
+use crate::spawn::spawn_projectile;
+use nightshade_api::prelude::*;
+
+pub fn player_input(world: &mut World, game_world: &mut GameWorld) {
+    let delta = delta_time(world);
+    let Some(player) = game_world.resources.player_entity else {
+        return;
+    };
+    let Some(player_position) = engine_position(world, game_world, player) else {
+        return;
+    };
+
+    let direction = wasd(world);
+    if let Some(velocity) = game_world.get_velocity_mut(player) {
+        velocity.0 = direction * PLAYER_SPEED;
+    }
+
+    let ready = match game_world.get_player_mut(player) {
+        Some(state) => {
+            state.fire_cooldown -= delta;
+            if state.fire_cooldown <= 0.0 {
+                state.fire_cooldown += PLAYER_FIRE_INTERVAL;
+                true
+            } else {
+                false
+            }
+        }
+        None => false,
+    };
+    if !ready {
+        return;
+    }
+
+    let mut best_distance = f32::INFINITY;
+    let mut target = None;
+    for enemy in game_world.query_entities(SEEKER | ENGINE_ENTITY) {
+        if let Some(enemy_position) = engine_position(world, game_world, enemy) {
+            let distance = (enemy_position - player_position).magnitude_squared();
+            if distance < best_distance {
+                best_distance = distance;
+                target = Some(enemy_position);
+            }
+        }
+    }
+    let Some(target) = target else {
+        return;
+    };
+
+    let mut aim = target - player_position;
+    aim.y = 0.0;
+    if aim.magnitude_squared() < 1.0e-6 {
+        return;
+    }
+    let aim = aim.normalize();
+    let spawn_at = vec3(player_position.x, BULLET_Y, player_position.z) + aim * PLAYER_RADIUS;
+    spawn_projectile(world, game_world, spawn_at, aim * BULLET_SPEED);
+}
