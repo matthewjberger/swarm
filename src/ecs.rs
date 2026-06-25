@@ -25,7 +25,6 @@ freecs::ecs! {
         score: u32,
         elapsed: f32,
         spawn_timer: f32,
-        rng: u64,
     }
 }
 
@@ -132,14 +131,6 @@ pub const DEBRIS_COLOR: [f32; 4] = [1.0, 0.6, 0.2, 1.0];
 pub const FLOOR_COLOR: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 pub const FLOOR_TILES: f32 = 6.0;
 pub const FLOOR_TEXTURE: &str = "proto_dark_06";
-pub const RANDOM_SEED: u64 = 0x9E37_79B9_7F4A_7C15;
-
-pub fn next_random(state: &mut u64) -> f32 {
-    *state ^= *state << 13;
-    *state ^= *state >> 7;
-    *state ^= *state << 17;
-    (*state >> 11) as f32 / (1u64 << 53) as f32
-}
 
 pub fn player_position(game_world: &GameWorld) -> Option<Vec3> {
     let player = game_world.resources.player_entity?;

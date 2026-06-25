@@ -1,5 +1,6 @@
 use crate::ecs::*;
 use crate::spawn::spawn_enemy;
+use nightshade_api::nightshade::prelude::{Rng, rand};
 use nightshade_api::prelude::*;
 
 pub fn enemy_spawning(world: &mut World, game_world: &mut GameWorld) {
@@ -14,7 +15,7 @@ pub fn enemy_spawning(world: &mut World, game_world: &mut GameWorld) {
     let interval = (SPAWN_INTERVAL_BASE - elapsed * 0.01).max(SPAWN_INTERVAL_MIN);
     game_world.resources.spawn_timer = interval;
 
-    let angle = next_random(&mut game_world.resources.rng) * std::f32::consts::TAU;
+    let angle = rand::rng().random_range(0.0..std::f32::consts::TAU);
     let spawn_at = vec3(
         angle.cos() * SPAWN_RADIUS,
         ENEMY_Y,

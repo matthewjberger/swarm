@@ -19,7 +19,6 @@ pub fn setup(world: &mut World) -> GameWorld {
     let mut game_world = GameWorld::default();
     let player = spawn_player(world, &mut game_world);
     game_world.resources.player_entity = Some(player);
-    game_world.resources.rng = RANDOM_SEED;
     game_world.resources.spawn_timer = SPAWN_INTERVAL_BASE;
 
     let score_text = spawn_text(world, "Score 0    Health 100", ScreenAnchor::TopCenter);
