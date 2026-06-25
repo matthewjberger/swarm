@@ -55,9 +55,7 @@ pub struct Health {
 }
 
 #[derive(Debug, Clone, Copy, Default)]
-pub struct Collider {
-    pub radius: f32,
-}
+pub struct Collider(pub f32);
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Faction(pub Team);
@@ -69,14 +67,10 @@ pub struct Seeker {
 }
 
 #[derive(Debug, Clone, Copy, Default)]
-pub struct Confined {
-    pub half_extent: f32,
-}
+pub struct Confined(pub f32);
 
 #[derive(Debug, Clone, Copy, Default)]
-pub struct Lifetime {
-    pub remaining: f32,
-}
+pub struct Lifetime(pub f32);
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Spin {
@@ -85,14 +79,10 @@ pub struct Spin {
 }
 
 #[derive(Debug, Clone, Copy, Default)]
-pub struct Damage {
-    pub amount: f32,
-}
+pub struct Damage(pub f32);
 
 #[derive(Debug, Clone, Copy, Default)]
-pub struct Player {
-    pub fire_cooldown: f32,
-}
+pub struct Player(pub f32);
 
 pub const ARENA_HALF: f32 = 14.0;
 pub const SPAWN_RADIUS: f32 = 13.0;

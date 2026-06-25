@@ -9,7 +9,7 @@ pub fn integrate_motion(world: &mut World, game_world: &mut GameWorld) {
         next.x += velocity.x * delta;
         next.z += velocity.z * delta;
         if table.mask & CONFINED != 0 {
-            let half = table.confined[index].half_extent;
+            let half = table.confined[index].0;
             next.x = next.x.clamp(-half, half);
             next.z = next.z.clamp(-half, half);
         }

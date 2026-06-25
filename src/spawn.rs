@@ -4,9 +4,16 @@ use nightshade_api::prelude::*;
 
 pub fn spawn_player(world: &mut World, game_world: &mut GameWorld) -> Entity {
     let origin = vec3(0.0, PLAYER_Y, 0.0);
-    let render = spawn_cube(world, origin);
-    set_scale(world, render, vec3(PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE));
-    set_color(world, render, PLAYER_COLOR);
+    let render = spawn_object(
+        world,
+        Object {
+            shape: Shape::Cube,
+            position: origin,
+            scale: Vec3::repeat(PLAYER_SIZE),
+            color: PLAYER_COLOR,
+            ..Object::default()
+        },
+    );
 
     let entity = game_world.spawn_entities(
         PLAYER | POSITION | VELOCITY | HEALTH | COLLIDER | FACTION | CONFINED | ENGINE_ENTITY,
@@ -22,27 +29,24 @@ pub fn spawn_player(world: &mut World, game_world: &mut GameWorld) -> Entity {
             max: PLAYER_MAX_HEALTH,
         },
     );
-    game_world.set_collider(
-        entity,
-        Collider {
-            radius: PLAYER_RADIUS,
-        },
-    );
+    game_world.set_collider(entity, Collider(PLAYER_RADIUS));
     game_world.set_faction(entity, Faction(Team::Player));
-    game_world.set_confined(
-        entity,
-        Confined {
-            half_extent: ARENA_HALF,
-        },
-    );
-    game_world.set_player(entity, Player { fire_cooldown: 0.0 });
+    game_world.set_confined(entity, Confined(ARENA_HALF));
+    game_world.set_player(entity, Player(0.0));
     entity
 }
 
 pub fn spawn_enemy(world: &mut World, game_world: &mut GameWorld, origin: Vec3, max_speed: f32) {
-    let render = spawn_sphere(world, origin);
-    set_scale(world, render, vec3(ENEMY_SIZE, ENEMY_SIZE, ENEMY_SIZE));
-    set_color(world, render, ENEMY_COLOR);
+    let render = spawn_object(
+        world,
+        Object {
+            shape: Shape::Sphere,
+            position: origin,
+            scale: Vec3::repeat(ENEMY_SIZE),
+            color: ENEMY_COLOR,
+            ..Object::default()
+        },
+    );
 
     let entity = game_world.spawn_entities(
         SEEKER
@@ -66,19 +70,9 @@ pub fn spawn_enemy(world: &mut World, game_world: &mut GameWorld, origin: Vec3, 
             max: ENEMY_MAX_HEALTH,
         },
     );
-    game_world.set_collider(
-        entity,
-        Collider {
-            radius: ENEMY_RADIUS,
-        },
-    );
+    game_world.set_collider(entity, Collider(ENEMY_RADIUS));
     game_world.set_faction(entity, Faction(Team::Enemy));
-    game_world.set_confined(
-        entity,
-        Confined {
-            half_extent: ARENA_HALF,
-        },
-    );
+    game_world.set_confined(entity, Confined(ARENA_HALF));
     game_world.set_seeker(
         entity,
         Seeker {
@@ -101,9 +95,16 @@ pub fn spawn_projectile(
     origin: Vec3,
     velocity: Vec3,
 ) {
-    let render = spawn_sphere(world, origin);
-    set_scale(world, render, vec3(BULLET_SIZE, BULLET_SIZE, BULLET_SIZE));
-    set_color(world, render, BULLET_COLOR);
+    let render = spawn_object(
+        world,
+        Object {
+            shape: Shape::Sphere,
+            position: origin,
+            scale: Vec3::repeat(BULLET_SIZE),
+            color: BULLET_COLOR,
+            ..Object::default()
+        },
+    );
 
     let entity = game_world.spawn_entities(
         POSITION | VELOCITY | DAMAGE | COLLIDER | FACTION | LIFETIME | ENGINE_ENTITY,
@@ -112,31 +113,23 @@ pub fn spawn_projectile(
     game_world.set_engine_entity(entity, EngineEntity(render));
     game_world.set_position(entity, Position(origin));
     game_world.set_velocity(entity, Velocity(velocity));
-    game_world.set_damage(
-        entity,
-        Damage {
-            amount: BULLET_DAMAGE,
-        },
-    );
-    game_world.set_collider(
-        entity,
-        Collider {
-            radius: BULLET_RADIUS,
-        },
-    );
+    game_world.set_damage(entity, Damage(BULLET_DAMAGE));
+    game_world.set_collider(entity, Collider(BULLET_RADIUS));
     game_world.set_faction(entity, Faction(Team::Player));
-    game_world.set_lifetime(
-        entity,
-        Lifetime {
-            remaining: BULLET_LIFETIME,
-        },
-    );
+    game_world.set_lifetime(entity, Lifetime(BULLET_LIFETIME));
 }
 
 pub fn spawn_debris(world: &mut World, game_world: &mut GameWorld, origin: Vec3) {
-    let render = spawn_cube(world, origin);
-    set_scale(world, render, vec3(DEBRIS_SIZE, DEBRIS_SIZE, DEBRIS_SIZE));
-    set_color(world, render, DEBRIS_COLOR);
+    let render = spawn_object(
+        world,
+        Object {
+            shape: Shape::Cube,
+            position: origin,
+            scale: Vec3::repeat(DEBRIS_SIZE),
+            color: DEBRIS_COLOR,
+            ..Object::default()
+        },
+    );
 
     let entity = game_world.spawn_entities(POSITION | SPIN | LIFETIME | ENGINE_ENTITY, 1)[0];
     game_world.set_engine_entity(entity, EngineEntity(render));
@@ -148,10 +141,5 @@ pub fn spawn_debris(world: &mut World, game_world: &mut GameWorld, origin: Vec3)
             speed: DEBRIS_SPIN,
         },
     );
-    game_world.set_lifetime(
-        entity,
-        Lifetime {
-            remaining: DEBRIS_LIFETIME,
-        },
-    );
+    game_world.set_lifetime(entity, Lifetime(DEBRIS_LIFETIME));
 }

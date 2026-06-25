@@ -18,9 +18,9 @@ pub fn player_input(world: &mut World, game_world: &mut GameWorld) {
 
     let ready = match game_world.get_player_mut(player) {
         Some(state) => {
-            state.fire_cooldown -= delta;
-            if state.fire_cooldown <= 0.0 {
-                state.fire_cooldown += PLAYER_FIRE_INTERVAL;
+            state.0 -= delta;
+            if state.0 <= 0.0 {
+                state.0 += PLAYER_FIRE_INTERVAL;
                 true
             } else {
                 false

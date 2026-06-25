@@ -29,14 +29,14 @@ pub fn collision(world: &mut World, game_world: &mut GameWorld) {
             Kind::Enemy
         };
         let damage = if table.mask & DAMAGE != 0 {
-            table.damage[index].amount
+            table.damage[index].0
         } else {
             0.0
         };
         bodies.push(Body {
             entity,
             position: table.position[index].0,
-            radius: table.collider[index].radius,
+            radius: table.collider[index].0,
             team: table.faction[index].0,
             kind,
             damage,
@@ -60,25 +60,28 @@ pub fn collision(world: &mut World, game_world: &mut GameWorld) {
             }
 
             match (a.kind, b.kind) {
-                (Kind::Projectile, Kind::Enemy)
-                    if !destroyed.contains(&a.entity) && !destroyed.contains(&b.entity) =>
-                {
-                    hits.push((b.entity, a.damage));
-                    destroyed.insert(a.entity);
+                (Kind::Projectile, Kind::Enemy) | (Kind::Enemy, Kind::Projectile) => {
+                    let (projectile, enemy) = if matches!(a.kind, Kind::Projectile) {
+                        (a, b)
+                    } else {
+                        (b, a)
+                    };
+                    if !destroyed.contains(&projectile.entity) && !destroyed.contains(&enemy.entity)
+                    {
+                        hits.push((enemy.entity, projectile.damage));
+                        destroyed.insert(projectile.entity);
+                    }
                 }
-                (Kind::Enemy, Kind::Projectile)
-                    if !destroyed.contains(&a.entity) && !destroyed.contains(&b.entity) =>
-                {
-                    hits.push((a.entity, b.damage));
-                    destroyed.insert(b.entity);
-                }
-                (Kind::Enemy, Kind::Player) if !destroyed.contains(&a.entity) => {
-                    hits.push((b.entity, ENEMY_CONTACT_DAMAGE));
-                    destroyed.insert(a.entity);
-                }
-                (Kind::Player, Kind::Enemy) if !destroyed.contains(&b.entity) => {
-                    hits.push((a.entity, ENEMY_CONTACT_DAMAGE));
-                    destroyed.insert(b.entity);
+                (Kind::Enemy, Kind::Player) | (Kind::Player, Kind::Enemy) => {
+                    let (enemy, player) = if matches!(a.kind, Kind::Enemy) {
+                        (a, b)
+                    } else {
+                        (b, a)
+                    };
+                    if !destroyed.contains(&enemy.entity) {
+                        hits.push((player.entity, ENEMY_CONTACT_DAMAGE));
+                        destroyed.insert(enemy.entity);
+                    }
                 }
                 _ => {}
             }
